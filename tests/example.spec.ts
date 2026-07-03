@@ -2,8 +2,18 @@ import { test, expect } from '@playwright/test';
 import { faker } from '@faker-js/faker';
 
 let randomNumber: number
+let token: string
 
-test.beforeAll(async () => {
+test.beforeAll(async ({ request }) => {
+  const loginResponse = await request.post("https://conduit-api.bondaracademy.com/api/users/login", {
+    data: { "user": { "email": "gokay@test.com", "password": "test1234" } }
+  })
+  const loginResponseBody = await loginResponse.json()
+  token = `Token ${loginResponseBody.user.token}`
+
+})
+
+test.beforeEach(async () => {
   randomNumber = faker.number.int({
     min: 1000,
     max: 5000
@@ -29,11 +39,6 @@ test("get all articles", async ({ request }) => {
 })
 
 test("create and delete article", async ({ request }) => {
-  const loginResponse = await request.post("https://conduit-api.bondaracademy.com/api/users/login", {
-    data: { "user": { "email": "gokay@test.com", "password": "test1234" } }
-  })
-  const loginResponseBody = await loginResponse.json()
-  const token = `Token ${loginResponseBody.user.token}`
 
   const createArticleResponse = await request.post("https://conduit-api.bondaracademy.com/api/articles/", {
     data: {
@@ -74,11 +79,6 @@ test("create and delete article", async ({ request }) => {
 
 
 test("create, update, delete article", async ({ request }) => {
-  const loginResponse = await request.post("https://conduit-api.bondaracademy.com/api/users/login", {
-    data: { "user": { "email": "gokay@test.com", "password": "test1234" } }
-  })
-  const loginResponseBody = await loginResponse.json()
-  const token = `Token ${loginResponseBody.user.token}`
 
   const createArticleResponse = await request.post("https://conduit-api.bondaracademy.com/api/articles/", {
     data: {
