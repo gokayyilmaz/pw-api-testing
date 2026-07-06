@@ -1,7 +1,7 @@
 import { test } from "../utils/fixtures";
 import { expect } from "../utils/custom-expect";
 import { faker } from "@faker-js/faker";
-import { createToken } from "../helpers/createToken";
+import { validateSchema } from "../utils/schema-validator";
 
 let randomNumber: number;
 
@@ -19,7 +19,6 @@ test("Get Articles", async ({ api }) => {
       limit: 10,
       offset: 0,
     })
-    // .clearAuth()
     .getRequest(200);
 
   expect(getArticlesResponseBody.articles.length).shouldBeLessThanOrEqual(10);
@@ -29,6 +28,7 @@ test("Get Articles", async ({ api }) => {
 test("Get Tags", async ({ api }) => {
   const getTagsResponseBody = await api.path("/tags").getRequest(200);
 
+  await validateSchema("tags", "GET_tags");
   expect(getTagsResponseBody.tags[0]).shouldEqual("Test");
   expect(getTagsResponseBody.tags.length).shouldBeLessThanOrEqual(10);
 });
@@ -63,9 +63,7 @@ test("Create and Delete Article", async ({ api }) => {
     `testTitle${randomNumber}`,
   );
 
-  await api
-    .path(`/articles/${slugId}`)
-    .deleteRequest(204);
+  await api.path(`/articles/${slugId}`).deleteRequest(204);
 
   const getArticlesResponseBodyTwo = await api
     .path("/articles")
@@ -127,9 +125,7 @@ test("Create, Update and Delete Article", async ({ api }) => {
     `testTitle${randomNumber} updated`,
   );
 
-  await api
-    .path(`/articles/${slugIdUpdated}`)
-    .deleteRequest(204);
+  await api.path(`/articles/${slugIdUpdated}`).deleteRequest(204);
 
   const getArticlesResponseBodyTwo = await api
     .path("/articles")

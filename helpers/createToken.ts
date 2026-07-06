@@ -21,6 +21,6 @@ export async function createToken(email: string, password: string) {
     Error.captureStackTrace(error as Error, createToken);
     throw error;
   } finally {
-    context.dispose()
+    context.dispose();
   }
 }

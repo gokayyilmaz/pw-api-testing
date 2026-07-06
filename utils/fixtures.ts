@@ -27,7 +27,12 @@ export const test = base.extend<TestOptions, WorkerFixture>({
     const baseUrl = "https://conduit-api.bondaracademy.com/api";
     const logger = new APILogger();
     setCustomExpectLogger(logger);
-    const requestHandler = new RequestHandler(request, config.apiUrl, logger, token);
+    const requestHandler = new RequestHandler(
+      request,
+      config.apiUrl,
+      logger,
+      token,
+    );
     await use(requestHandler);
   },
   config: async ({}, use) => {
