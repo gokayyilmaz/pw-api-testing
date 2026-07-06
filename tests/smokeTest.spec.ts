@@ -1,34 +1,20 @@
 import { test } from "../utils/fixtures";
-import { expect } from "../utils/custom-expect"
+import { expect } from "../utils/custom-expect";
 import { faker } from "@faker-js/faker";
-import { APILogger } from "../utils/logger";
+import { createToken } from "../helpers/createToken";
 
 let randomNumber: number;
 let token: string;
 
-test.beforeAll(async ({ api }) => {
-  const tokenResponseBody = await api
-    .path("/users/login")
-    .body({
-      user: { email: "gokay@test.com", password: "test1234" },
-    })
-    .postRequest(200);
+test.beforeAll(async ({ api, config }) => {
 
-  token = `Token ${tokenResponseBody.user.token}`;
+  token = await createToken(config.userEmail, config.userPassword)
 
   randomNumber = faker.number.int({
     min: 1000,
     max: 5000,
   });
 });
-
-test("logger", () => {
-  const logger = new APILogger()
-  logger.logRequest("GET", "https://test.com/api", {Authorization: "token"}, {foo: "bar"})
-  logger.logResponse(200, {foo: "bar"})
-  const logs = logger.getRecentLogs()
-  console.log(logs)
-})
 
 test("Get Articles", async ({ api }) => {
   const getArticlesResponseBody = await api
@@ -40,7 +26,7 @@ test("Get Articles", async ({ api }) => {
     .getRequest(200);
 
   expect(getArticlesResponseBody.articles.length).shouldBeLessThanOrEqual(10);
-  expect(getArticlesResponseBody.articlesCount).shouldEqual(10)
+  expect(getArticlesResponseBody.articlesCount).shouldEqual(10);
 });
 
 test("Get Tags", async ({ api }) => {
