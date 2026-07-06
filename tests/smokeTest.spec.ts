@@ -1,5 +1,7 @@
-import { test, expect } from "../utils/fixtures";
+import { test } from "../utils/fixtures";
+import { expect } from "../utils/custom-expect"
 import { faker } from "@faker-js/faker";
+import { APILogger } from "../utils/logger";
 
 let randomNumber: number;
 let token: string;
@@ -20,6 +22,14 @@ test.beforeAll(async ({ api }) => {
   });
 });
 
+test("logger", () => {
+  const logger = new APILogger()
+  logger.logRequest("GET", "https://test.com/api", {Authorization: "token"}, {foo: "bar"})
+  logger.logResponse(200, {foo: "bar"})
+  const logs = logger.getRecentLogs()
+  console.log(logs)
+})
+
 test("Get Articles", async ({ api }) => {
   const getArticlesResponseBody = await api
     .path("/articles")
@@ -29,15 +39,15 @@ test("Get Articles", async ({ api }) => {
     })
     .getRequest(200);
 
-  expect(getArticlesResponseBody.articles.length).toBeLessThanOrEqual(10);
-  expect(getArticlesResponseBody.articlesCount).toBeLessThanOrEqual(10);
+  expect(getArticlesResponseBody.articles.length).shouldBeLessThanOrEqual(10);
+  expect(getArticlesResponseBody.articlesCount).shouldEqual(10)
 });
 
 test("Get Tags", async ({ api }) => {
   const getTagsResponseBody = await api.path("/tags").getRequest(200);
 
-  expect(getTagsResponseBody.tags[0]).toBe("Test");
-  expect(getTagsResponseBody.tags.length).toBeLessThanOrEqual(10);
+  expect(getTagsResponseBody.tags[0]).shouldEqual("Test");
+  expect(getTagsResponseBody.tags.length).shouldBeLessThanOrEqual(10);
 });
 
 test("Create and Delete Article", async ({ api }) => {
@@ -54,7 +64,7 @@ test("Create and Delete Article", async ({ api }) => {
     })
     .postRequest(201);
 
-  expect(createArticleResponseBody.article.title).toBe(
+  expect(createArticleResponseBody.article.title).shouldEqual(
     `testTitle${randomNumber}`,
   );
   const slugId = createArticleResponseBody.article.slug;
@@ -68,7 +78,7 @@ test("Create and Delete Article", async ({ api }) => {
     })
     .getRequest(200);
 
-  expect(getArticlesResponseBody.articles[0].title).toBe(
+  expect(getArticlesResponseBody.articles[0].title).shouldEqual(
     `testTitle${randomNumber}`,
   );
 
@@ -86,7 +96,7 @@ test("Create and Delete Article", async ({ api }) => {
     })
     .getRequest(200);
 
-  expect(getArticlesResponseBodyTwo.articles[0].title).not.toBe(
+  expect(getArticlesResponseBodyTwo.articles[0].title).not.shouldEqual(
     `testTitle${randomNumber}`,
   );
 });
@@ -105,7 +115,7 @@ test("Create, Update and Delete Article", async ({ api }) => {
     })
     .postRequest(201);
 
-  expect(createArticleResponseBody.article.title).toBe(
+  expect(createArticleResponseBody.article.title).shouldEqual(
     `testTitle${randomNumber}`,
   );
   const slugId = createArticleResponseBody.article.slug;
@@ -123,7 +133,7 @@ test("Create, Update and Delete Article", async ({ api }) => {
     })
     .putRequest(200);
 
-  expect(updateArticleResponseBody.article.title).toBe(
+  expect(updateArticleResponseBody.article.title).shouldEqual(
     `testTitle${randomNumber} updated`,
   );
   const slugIdUpdated = updateArticleResponseBody.article.slug;
@@ -137,7 +147,7 @@ test("Create, Update and Delete Article", async ({ api }) => {
     })
     .getRequest(200);
 
-  expect(getArticlesResponseBody.articles[0].title).toBe(
+  expect(getArticlesResponseBody.articles[0].title).shouldEqual(
     `testTitle${randomNumber} updated`,
   );
 
@@ -155,10 +165,10 @@ test("Create, Update and Delete Article", async ({ api }) => {
     })
     .getRequest(200);
 
-  expect(getArticlesResponseBodyTwo.articles[0].title).not.toBe(
+  expect(getArticlesResponseBodyTwo.articles[0].title).not.shouldEqual(
     `testTitle${randomNumber}`,
   );
-  expect(getArticlesResponseBodyTwo.articles[0].title).not.toBe(
+  expect(getArticlesResponseBodyTwo.articles[0].title).not.shouldEqual(
     `testTitle${randomNumber} updated`,
   );
 });
