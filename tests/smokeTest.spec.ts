@@ -1,7 +1,6 @@
 import { test } from "../utils/fixtures";
 import { expect } from "../utils/custom-expect";
 import { faker } from "@faker-js/faker";
-import { validateSchema } from "../utils/schema-validator";
 
 let randomNumber: number;
 
@@ -20,15 +19,17 @@ test("Get Articles", async ({ api }) => {
       offset: 0,
     })
     .getRequest(200);
-
+  await expect(getArticlesResponseBody).shouldMatchSchema(
+    "articles",
+    "GET_articles",
+  );
   expect(getArticlesResponseBody.articles.length).shouldBeLessThanOrEqual(10);
   expect(getArticlesResponseBody.articlesCount).shouldEqual(50);
 });
 
 test("Get Tags", async ({ api }) => {
   const getTagsResponseBody = await api.path("/tags").getRequest(200);
-
-  await validateSchema("tags", "GET_tags", getTagsResponseBody);
+  await expect(getTagsResponseBody).shouldMatchSchema("tags", "GET_tags");
   expect(getTagsResponseBody.tags[0]).shouldEqual("Test");
   expect(getTagsResponseBody.tags.length).shouldBeLessThanOrEqual(10);
 });
@@ -45,7 +46,10 @@ test("Create and Delete Article", async ({ api }) => {
       },
     })
     .postRequest(201);
-
+  await expect(createArticleResponseBody).shouldMatchSchema(
+    "articles",
+    "POST_articles",
+  );
   expect(createArticleResponseBody.article.title).shouldEqual(
     `testTitle${randomNumber}`,
   );

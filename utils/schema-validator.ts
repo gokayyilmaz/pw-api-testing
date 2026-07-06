@@ -1,6 +1,7 @@
 import fs from "fs/promises";
 import path from "path";
 import Ajv from "ajv";
+import { createSchema } from "genson-js";
 
 const SCHEMA_BASE_PATH = "./response-schemas";
 const ajv = new Ajv({ allErrors: true });
@@ -9,21 +10,25 @@ export async function validateSchema(
   dirName: string,
   fileName: string,
   responseBody: object,
+  createSchemaFlag: boolean = false,
 ) {
   const schemaPath = path.join(
     SCHEMA_BASE_PATH,
     dirName,
     `${fileName}_schema.json`,
   );
+
+  if (createSchemaFlag) await generateNewSchema(responseBody, schemaPath);
+
   const schema = await loadSchema(schemaPath);
   const validate = ajv.compile(schema);
   const valid = validate(responseBody);
   if (!valid) {
     throw new Error(
       `Schema validation ${fileName}_schema.json failed:\n` +
-        `${JSON.stringify(validate.errors, null, 4)}\n\n`+
-        `Actual response body: \n`+
-        `${JSON.stringify(responseBody, null, 4)}`
+        `${JSON.stringify(validate.errors, null, 4)}\n\n` +
+        `Actual response body: \n` +
+        `${JSON.stringify(responseBody, null, 4)}`,
     );
   }
 }
@@ -35,6 +40,18 @@ async function loadSchema(schemaPath: string) {
   } catch (error) {
     throw new Error(
       `Failed to read the schema file: ${(error as Error).message}`,
+    );
+  }
+}
+
+async function generateNewSchema(responseBody: object, schemaPath: string) {
+  try {
+    const generatedSchema = createSchema(responseBody);
+    await fs.mkdir(path.dirname(schemaPath), { recursive: true });
+    await fs.writeFile(schemaPath, JSON.stringify(generatedSchema, null, 4));
+  } catch (error) {
+    throw new Error(
+      `Failed to created schema file: ${(error as Error).message}`,
     );
   }
 }
