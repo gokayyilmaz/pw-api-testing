@@ -9,13 +9,13 @@ const config = {
 }
 
 if (env === "qa" ) {
-  config.userEmail = "gokay2@test.com",
-  config.userPassword = "test1234"
+  config.userEmail = "gokay2@test.com";
+  config.userPassword = "test1234";
 }
 
 if (env === "prod" ) {
-  config.userEmail = "gokay3@test.com",
-  config.userPassword = "test1234"
+  config.userEmail = "gokay3@test.com";
+  config.userPassword = "test1234";
 }
 
 export {config}
