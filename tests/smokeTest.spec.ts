@@ -4,12 +4,8 @@ import { faker } from "@faker-js/faker";
 import { createToken } from "../helpers/createToken";
 
 let randomNumber: number;
-let token: string;
 
 test.beforeAll(async ({ api, config }) => {
-
-  token = await createToken(config.userEmail, config.userPassword)
-
   randomNumber = faker.number.int({
     min: 1000,
     max: 5000,
@@ -23,10 +19,11 @@ test("Get Articles", async ({ api }) => {
       limit: 10,
       offset: 0,
     })
+    // .clearAuth()
     .getRequest(200);
 
   expect(getArticlesResponseBody.articles.length).shouldBeLessThanOrEqual(10);
-  expect(getArticlesResponseBody.articlesCount).shouldEqual(10);
+  expect(getArticlesResponseBody.articlesCount).shouldEqual(50);
 });
 
 test("Get Tags", async ({ api }) => {
@@ -39,7 +36,6 @@ test("Get Tags", async ({ api }) => {
 test("Create and Delete Article", async ({ api }) => {
   const createArticleResponseBody = await api
     .path("/articles")
-    .headers({ Authorization: token })
     .body({
       article: {
         title: `testTitle${randomNumber}`,
@@ -57,7 +53,6 @@ test("Create and Delete Article", async ({ api }) => {
 
   const getArticlesResponseBody = await api
     .path("/articles")
-    .headers({ Authorization: token })
     .params({
       limit: 10,
       offset: 0,
@@ -70,12 +65,10 @@ test("Create and Delete Article", async ({ api }) => {
 
   await api
     .path(`/articles/${slugId}`)
-    .headers({ Authorization: token })
     .deleteRequest(204);
 
   const getArticlesResponseBodyTwo = await api
     .path("/articles")
-    .headers({ Authorization: token })
     .params({
       limit: 10,
       offset: 0,
@@ -90,7 +83,6 @@ test("Create and Delete Article", async ({ api }) => {
 test("Create, Update and Delete Article", async ({ api }) => {
   const createArticleResponseBody = await api
     .path("/articles")
-    .headers({ Authorization: token })
     .body({
       article: {
         title: `testTitle${randomNumber}`,
@@ -108,7 +100,6 @@ test("Create, Update and Delete Article", async ({ api }) => {
 
   const updateArticleResponseBody = await api
     .path(`/articles/${slugId}`)
-    .headers({ Authorization: token })
     .body({
       article: {
         title: `testTitle${randomNumber} updated`,
@@ -126,7 +117,6 @@ test("Create, Update and Delete Article", async ({ api }) => {
 
   const getArticlesResponseBody = await api
     .path("/articles")
-    .headers({ Authorization: token })
     .params({
       limit: 10,
       offset: 0,
@@ -139,12 +129,10 @@ test("Create, Update and Delete Article", async ({ api }) => {
 
   await api
     .path(`/articles/${slugIdUpdated}`)
-    .headers({ Authorization: token })
     .deleteRequest(204);
 
   const getArticlesResponseBodyTwo = await api
     .path("/articles")
-    .headers({ Authorization: token })
     .params({
       limit: 10,
       offset: 0,

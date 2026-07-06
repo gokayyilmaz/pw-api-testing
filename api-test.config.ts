@@ -1,6 +1,6 @@
 const processENV = process.env.TEST_ENV
 const env = processENV || "dev"
-console.log("Tes environment is: " + env)
+console.log("Test environment is: " + env)
 
 const config = {
   apiUrl: "https://conduit-api.bondaracademy.com/api",
