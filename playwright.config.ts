@@ -26,7 +26,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
-    // baseURL: 'http://localhost:3000',
+    // baseURL: "https://conduit.bondaracademy.com/",
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
@@ -35,18 +35,27 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     {
-      name: "smoke",
+      name: "smoke-tests",
+      testDir: "./tests/api-tests",
       testMatch: "smoke*",
     },
     {
-      name: "api-testing",
+      name: "api-tests",
+      testDir: "./tests/api-tests",
       testMatch: "example*",
-      dependencies: ["smoke"],
+      dependencies: ["smoke-tests"],
     },
     {
       name: "negative",
+      testDir: "./tests/api-tests",
       testMatch: "negative*",
-      dependencies: ["api-testing"],
+      dependencies: ["api-tests"],
+    },
+    {
+      name: "ui-tests",
+      testDir: "./tests/ui-tests",
+      dependencies: ["negative"],
+      use: { ...devices["Desktop Chrome"] },
     },
 
     // {
