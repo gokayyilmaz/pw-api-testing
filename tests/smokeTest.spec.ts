@@ -1,15 +1,5 @@
 import { test } from "../utils/fixtures";
 import { expect } from "../utils/custom-expect";
-import { faker } from "@faker-js/faker";
-
-let randomNumber: number;
-
-test.beforeAll(async ({ api, config }) => {
-  randomNumber = faker.number.int({
-    min: 1000,
-    max: 5000,
-  });
-});
 
 test("Get Articles", async ({ api }) => {
   const getArticlesResponseBody = await api
@@ -39,9 +29,9 @@ test("Create and Delete Article", async ({ api }) => {
     .path("/articles")
     .body({
       article: {
-        title: `testTitle${randomNumber}`,
-        description: `testDescription${randomNumber}`,
-        body: `testBody${randomNumber}`,
+        title: `testTitle1903`,
+        description: `testDescription1903`,
+        body: `testBody1903`,
         tagList: [],
       },
     })
@@ -51,7 +41,7 @@ test("Create and Delete Article", async ({ api }) => {
     "POST_articles",
   );
   expect(createArticleResponseBody.article.title).shouldEqual(
-    `testTitle${randomNumber}`,
+    `testTitle1903`,
   );
   const slugId = createArticleResponseBody.article.slug;
 
@@ -64,7 +54,7 @@ test("Create and Delete Article", async ({ api }) => {
     .getRequest(200);
 
   expect(getArticlesResponseBody.articles[0].title).shouldEqual(
-    `testTitle${randomNumber}`,
+    `testTitle1903`,
   );
 
   await api.path(`/articles/${slugId}`).deleteRequest(204);
@@ -78,7 +68,7 @@ test("Create and Delete Article", async ({ api }) => {
     .getRequest(200);
 
   expect(getArticlesResponseBodyTwo.articles[0].title).not.shouldEqual(
-    `testTitle${randomNumber}`,
+    `testTitle1903`,
   );
 });
 
@@ -87,16 +77,16 @@ test("Create, Update and Delete Article", async ({ api }) => {
     .path("/articles")
     .body({
       article: {
-        title: `testTitle${randomNumber}`,
-        description: `testDescription${randomNumber}`,
-        body: `testBody${randomNumber}`,
+        title: `testTitle1903`,
+        description: `testDescription1903`,
+        body: `testBody1903`,
         tagList: [],
       },
     })
     .postRequest(201);
 
   expect(createArticleResponseBody.article.title).shouldEqual(
-    `testTitle${randomNumber}`,
+    `testTitle1903`,
   );
   const slugId = createArticleResponseBody.article.slug;
 
@@ -104,16 +94,16 @@ test("Create, Update and Delete Article", async ({ api }) => {
     .path(`/articles/${slugId}`)
     .body({
       article: {
-        title: `testTitle${randomNumber} updated`,
-        description: `testDescription${randomNumber}`,
-        body: `testBody${randomNumber}`,
+        title: `testTitle1903 updated`,
+        description: `testDescription1903`,
+        body: `testBody1903`,
         tagList: [],
       },
     })
     .putRequest(200);
 
   expect(updateArticleResponseBody.article.title).shouldEqual(
-    `testTitle${randomNumber} updated`,
+    `testTitle1903 updated`,
   );
   const slugIdUpdated = updateArticleResponseBody.article.slug;
 
@@ -126,7 +116,7 @@ test("Create, Update and Delete Article", async ({ api }) => {
     .getRequest(200);
 
   expect(getArticlesResponseBody.articles[0].title).shouldEqual(
-    `testTitle${randomNumber} updated`,
+    `testTitle1903 updated`,
   );
 
   await api.path(`/articles/${slugIdUpdated}`).deleteRequest(204);
@@ -140,9 +130,9 @@ test("Create, Update and Delete Article", async ({ api }) => {
     .getRequest(200);
 
   expect(getArticlesResponseBodyTwo.articles[0].title).not.shouldEqual(
-    `testTitle${randomNumber}`,
+    `testTitle1903`,
   );
   expect(getArticlesResponseBodyTwo.articles[0].title).not.shouldEqual(
-    `testTitle${randomNumber} updated`,
+    `testTitle1903 updated`,
   );
 });

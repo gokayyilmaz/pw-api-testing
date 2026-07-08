@@ -1,0 +1,8 @@
+{
+      article: {
+        title: `testTitle${randomNumber}`,
+        description: `testDescription${randomNumber}`,
+        body: `testBody${randomNumber}`,
+        tagList: [],
+      },
+    }
