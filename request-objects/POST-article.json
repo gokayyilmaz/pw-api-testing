@@ -1,8 +1,8 @@
 {
-      article: {
-        title: `testTitle${randomNumber}`,
-        description: `testDescription${randomNumber}`,
-        body: `testBody${randomNumber}`,
-        tagList: [],
-      },
-    }
+  "article": {
+    "title": "testTitle1903",
+    "description": "testDescription1903",
+    "body": "testBody1903",
+    "tagList": []
+  }
+}
