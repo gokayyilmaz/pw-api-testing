@@ -37,7 +37,7 @@ export default defineConfig({
     {
       name: "negative",
       testMatch: "negative*",
-      // dependencies: ["api-testing"],
+      dependencies: ["api-testing"],
     },
     {
       name: "api-testing",
