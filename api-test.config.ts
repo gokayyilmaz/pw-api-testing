@@ -1,3 +1,7 @@
+import dotenv from "dotenv";
+import path from "path";
+dotenv.config({ path: path.resolve(__dirname, ".env") });
+
 const processENV = process.env.TEST_ENV;
 const env = processENV || "dev";
 console.log("Test environment is: " + env);
@@ -14,8 +18,11 @@ if (env === "qa") {
 }
 
 if (env === "prod") {
-  config.userEmail = "gokay3@test.com";
-  config.userPassword = "test1234";
+  if (!process.env.PROD_USERNAME || !process.env.PROD_PASSWORD) {
+    throw Error("Missing required environment variables");
+  }
+  config.userEmail = process.env.PROD_USERNAME;
+  config.userPassword = process.env.PROD_PASSWORD;
 }
 
 export { config };
