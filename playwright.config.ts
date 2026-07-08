@@ -35,6 +35,11 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     {
+      name: "negative",
+      testMatch: "negative*",
+      // dependencies: ["api-testing"],
+    },
+    {
       name: "api-testing",
       testMatch: "example*",
       dependencies: ["smoke"],
